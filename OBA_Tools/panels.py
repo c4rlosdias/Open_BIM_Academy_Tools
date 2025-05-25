@@ -21,6 +21,8 @@ class Panel_Relate_Void(bpy.types.Panel):
     
     def draw(self, context):           
         layout = self.layout
+        row = layout.row()
+        row.label(text="Select Walls")
         props = context.scene.my_props
         if context.selected_objects:
             objs = [tool.Ifc.get_entity(o) for o in context.selected_objects if tool.Ifc.get_entity(o).is_a("IfcWall")]            

@@ -172,3 +172,7 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Others
+.OBA_Tools
+OBA_Tools.zip
