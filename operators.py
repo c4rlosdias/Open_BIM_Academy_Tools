@@ -25,8 +25,10 @@ class Operator_relate_void(bpy.types.Operator):
         props = context.scene.my_props
         model = tool.Ifc.get()
         openings = []
-        walls = []
-        objs = [tool.Ifc.get_entity(o) for o in context.selected_objects if tool.Ifc.get_entity(o).is_a("IfcWall")] 
+        objs_to_be_voided = []
+        allowed_types = ["IfcWall", "IfcCovering"]
+        objs = [tool.Ifc.get_entity(o) for o in context.selected_objects 
+                if tool.Ifc.get_entity(o).is_a() in allowed_types]
         if objs:
             for obj in objs:
                 rels = obj.HasOpenings
@@ -34,10 +36,10 @@ class Operator_relate_void(bpy.types.Operator):
                     for rel in rels:
                         openings.append(rel.RelatedOpeningElement)
                 else:
-                    walls.append(obj)
+                    objs_to_be_voided.append(obj)
             
-            if walls:
-                for wall in walls:
+            if objs_to_be_voided:
+                for wall in objs_to_be_voided:
                     for opening in openings:
                         model.create_entity("IfcRelVoidsElement",
                                              RelatingBuildingElement=wall,
