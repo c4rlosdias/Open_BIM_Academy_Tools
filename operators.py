@@ -33,16 +33,21 @@ class Operator_relate_void(bpy.types.Operator):
                 if rels:
                     for rel in rels:
                         openings.append(rel.RelatedOpeningElement)
-                else:
-                    walls.append(obj)
             
-            if walls:
-                for wall in walls:
-                    for opening in openings:
-                        model.create_entity("IfcRelVoidsElement",
-                                             RelatingBuildingElement=wall,
-                                             RelatedOpeningElement=opening
-                        )
+            for obj in objs:
+                for opening in set(openings):
+                    model.create_entity("IfcRelVoidsElement",
+                                         RelatingBuildingElement=obj,
+                                         RelatedOpeningElement=opening
+                    )
+                    blender_obj = tool.Ifc.get_object(obj)
+                    blender_obj.select_set(True)                    
+                    if obj.is_a('IfcWall'):
+                        bpy.ops.bim.recalculate_wall()
+                    elif obj.is_a('IfcSlab'):
+                        bpy.ops.bim.recalculate_slab()
+                    else:
+                        bpy.ops.bim.recalculate_fill()
 
         return {"FINISHED"}
     
